@@ -81,13 +81,6 @@ export default async function AdminSidebar(props: Props) {
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownUser user={props.user} logout={props.logout} />
-            {/*<DropdownUser
-              user={{
-                name: "name",
-                role: "admin",
-                email: "andev.web@gmail.com",
-              }}
-            />*/}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
