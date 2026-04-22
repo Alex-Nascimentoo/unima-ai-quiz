@@ -14,8 +14,15 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import DropdownUser from "./dropdownUser";
+import { SessionUser } from "@/lib/_types";
 
-export default function MainSidebar() {
+type Props = {
+  user: SessionUser;
+  logout: () => Promise<void>;
+};
+
+export default function MainSidebar(props: Props) {
   return (
     <Sidebar
       className="
@@ -34,34 +41,25 @@ export default function MainSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Link href="/app/dashboard">Dashboard</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Quiz</SidebarGroupLabel>
+          <SidebarGroupLabel>Quizzes</SidebarGroupLabel>
 
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton>
-                <Link href="/app/quiz/new">Novo Quiz</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Link href="/app/quiz/list">Ver todos quiz</Link>
+                <Link href="/app/student/quiz">Ver quizzes</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownUser user={props.user} logout={props.logout} />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

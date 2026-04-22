@@ -13,7 +13,7 @@ export default async function Layout({ children }) {
       <SidebarProvider>
         {user.role === "admin" && <AdminSidebar user={user} logout={logout} />}
 
-        {user.role === "user" && <MainSidebar />}
+        {user.role === "user" && <MainSidebar user={user} logout={logout} />}
 
         <main className="w-full">
           <SidebarTrigger />
