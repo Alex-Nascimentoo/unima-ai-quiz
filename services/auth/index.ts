@@ -1,3 +1,5 @@
+"use server";
+
 import { createSession, deleteSession } from "@/lib/session";
 import { prisma } from "../database/prisma";
 

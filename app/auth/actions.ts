@@ -5,19 +5,14 @@ import { login } from "@/services/auth";
 import { prisma } from "@/services/database/prisma";
 
 export async function actionSignIn(email: string) {
-  console.log("inside actionSignIn email is: ", email);
   try {
     const user = await prisma.user.findFirst({
       where: { email: email },
     });
 
-    console.log("just found user");
-
     if (!user) {
       throw new Error("Usuário não encontrado");
     }
-
-    console.log("user is: ", user);
 
     const userToken = Math.floor(1000 + Math.random() * 9000);
 
@@ -72,13 +67,6 @@ export async function checkVerificationToken(
   token: string | null,
   email: string | null,
 ) {
-  console.log(
-    "inside checkVerificationToken with token: ",
-    token,
-    " and email: ",
-    email,
-  );
-
   if (!token || !email) {
     return "error";
   }
@@ -99,7 +87,9 @@ export async function checkVerificationToken(
       return "error";
     }
 
+    console.log("will enter login function");
     const result = await login(email);
+    console.log("result is: ", result);
 
     if (result === "error") {
       return "error";

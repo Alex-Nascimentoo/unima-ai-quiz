@@ -14,8 +14,15 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import DropdownUser from "./dropdownUser";
+import { SessionUser } from "@/lib/_types";
 
-export default function AdminSidebar() {
+type Props = {
+  user: SessionUser;
+  logout: () => Promise<void>;
+};
+
+export default async function AdminSidebar(props: Props) {
   return (
     <Sidebar
       className="
@@ -69,7 +76,21 @@ export default function AdminSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownUser user={props.user} logout={props.logout} />
+            {/*<DropdownUser
+              user={{
+                name: "name",
+                role: "admin",
+                email: "andev.web@gmail.com",
+              }}
+            />*/}
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
