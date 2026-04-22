@@ -41,8 +41,20 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function useSession() {
-  const session = (await cookies()).get("session")?.value;
+/**
+ * Read the session payload from cookies.
+ *
+ * Supports being called with an optional NextRequest (middleware or edge)
+ * or without (server component / server action) where it will read cookies()
+ * from next/headers.
+ *
+ * Returns the decoded SessionPayload or null when missing/invalid.
+ */
+export async function getSessionPayload(req?: NextRequest | null) {
+  const session = req
+    ? req.cookies.get("session")?.value
+    : (await cookies()).get("session")?.value;
+
   const decrypted = await decrypt(session);
 
   if (!session || !decrypted) {
@@ -50,6 +62,25 @@ export async function useSession() {
   }
 
   return decrypted as SessionPayload;
+}
+
+/**
+ * Helper: returns the SessionUser (user) from the session, or null.
+ * Accepts an optional NextRequest so it can be used in middleware or other
+ * server contexts that provide the request object.
+ */
+export async function getSessionUser(req?: NextRequest | null) {
+  const payload = await getSessionPayload(req);
+  if (!payload) return null;
+  return (payload as SessionPayload).user;
+}
+
+/**
+ * Backwards-compatible useSession: returns the full payload (SessionPayload | null)
+ * by delegating to getSessionPayload.
+ */
+export async function useSession() {
+  return await getSessionPayload();
 }
 
 export async function createSession(user: SessionUser) {
