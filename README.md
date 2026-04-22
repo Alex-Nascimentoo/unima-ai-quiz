@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quiz Maker
 
-## Getting Started
+Uma plataforma onde o professor pode criar seus quizes e permitir que os alunos pratiquem sua matéria a qualquer momento e com correção automática.  
+Demo no YouTube: [Clique aqui.](https://youtu.be/eVyt_kJdT7I)
 
-First, run the development server:
+### Requisitos
+- Node >= 20
+- Banco de dados Postgres
+- Conta de email para envio do código de login
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Instalação
+1. Clone o repositório:
+   - `git clone <url-do-repo>`
+2. Instale as dependências:
+   - `npm install`
+3. Configure variáveis de ambiente conforme necessário (veja `Configuração`).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Uso
+- Como rodar o projeto localmente (1–2 comandos).
+  - Exemplo: `npm start` ou `python main.py`
+- Passos básicos para testar a funcionalidade principal (ex.: abrir `http://localhost:3000`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Configuração
+Defina algumas variáveis importantes no seu arquivo `.env`:
+  - `DATABASE_URL` — string de conexão com o banco de dados PostgresSQL
+  - `EXPIRE_TIME` — tempo que o usuário ficará logado na sessão do navegador
+  - `SESSION_SECRET` — segredo para criptografia do token JWT da sessão
+  - `NEXT_PUBLIC_APP_URL` — URL base da aplicação
+  - `SMTP_SERVER_HOST` — domínio do servidor de email que será utilizado para enviar o código de login
+  - `SMTP_SERVER_USERNAME` — usuário de email
+  - `SMTP_SERVER_PASSWORD` — senha do usuário do email
+  - `SITE_MAIL_RECIEVER` — usuário de email para receber mensagens em caso de erros de envio de email
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Como funciona (visão geral)
 
-## Learn More
+- Componentes
+  - Frontend (Next.JS): interface com funções serverless para comunicação com o banco de dados.
+  - Armazenamento (PostgresSQL): banco de dados para persistência.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Fluxo de dados
+  1. O usuário executa uma ação na interface.
+  3. A função serverless valida os dados, executa a lógica necessária e acessa o armazenamento.
+  4. A função serverless retorna uma resposta para exibição na interface ou para o cliente consumir.
