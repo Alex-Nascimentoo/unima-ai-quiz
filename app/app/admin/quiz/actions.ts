@@ -270,3 +270,56 @@ export async function actionEditQuiz(dto: Quiz) {
     throw new Error("Failed to update quiz");
   }
 }
+
+/**
+ * Server action: delete a Quiz and its dependent Questions and Options.
+ *
+ * Behavior:
+ * - Deletes Options for the quiz's Questions (if any), then deletes Questions,
+ *   and finally deletes the Quiz itself. This ordering avoids foreign-key
+ *   constraint violations.
+ *
+ * Accepts a quiz id string and returns a simple success object on completion.
+ */
+export async function actionDeleteQuiz(quizId: string) {
+  if (!quizId || typeof quizId !== "string") {
+    throw new Error("Quiz id is required");
+  }
+
+  try {
+    // Find questions belonging to the quiz
+    const questions = await prisma.question.findMany({
+      where: { quizId },
+      select: { id: true },
+    });
+
+    const questionIds = questions.map((q) => q.id);
+
+    // Delete options that belong to the questions (if any)
+    if (questionIds.length > 0) {
+      await prisma.option.deleteMany({
+        where: {
+          questionId: { in: questionIds },
+        },
+      });
+    }
+
+    // Delete questions
+    await prisma.question.deleteMany({
+      where: { quizId },
+    });
+
+    // Delete quiz
+    await prisma.quiz.delete({
+      where: { id: quizId },
+    });
+
+    return { success: true };
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line no-console
+      console.error("actionDeleteQuiz error:", error);
+    }
+    throw new Error("Failed to delete quiz");
+  }
+}

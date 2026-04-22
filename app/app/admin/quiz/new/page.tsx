@@ -9,7 +9,6 @@ export default function Page() {
     >
       <h1 className="text-2xl font-bold mb-4">Novo Quiz</h1>
       <QuizForm mode="create" />
-    </section> />
     </section>
   );
 }

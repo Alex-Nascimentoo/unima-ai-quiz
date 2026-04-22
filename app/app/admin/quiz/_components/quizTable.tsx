@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Quiz } from "@/app/_types/quiz";
+import { actionDeleteQuiz } from "@/app/app/admin/quiz/actions";
 
 interface QuizTableProps {
   initialQuizzes?: Quiz[];
@@ -49,14 +50,7 @@ export default function QuizTable({ initialQuizzes = [] }: QuizTableProps) {
     setDeletingId(id);
 
     try {
-      const res = await fetch(`/api/admin/quiz/${encodeURIComponent(id)}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => null);
-        throw new Error(text || "Falha ao deletar quiz");
-      }
+      await actionDeleteQuiz(id);
 
       setQuizzes((prev) => prev.filter((q) => q.id !== id));
       toast.success("Quiz removido");
@@ -76,10 +70,12 @@ export default function QuizTable({ initialQuizzes = [] }: QuizTableProps) {
     <div>
       <Table className="min-w-full">
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-3/5">Título</TableHead>
-            <TableHead className="w-1/5">Perguntas</TableHead>
-            <TableHead className="w-1/5 text-right">Ações</TableHead>
+          <TableRow className="bg-secondary">
+            <TableHead className="w-3/5 font-bold text-lg">Título</TableHead>
+            <TableHead className="w-1/5 font-bold text-lg">Perguntas</TableHead>
+            <TableHead className="w-1/5 text-right font-bold text-lg">
+              Ações
+            </TableHead>
           </TableRow>
         </TableHeader>
 
@@ -95,9 +91,6 @@ export default function QuizTable({ initialQuizzes = [] }: QuizTableProps) {
               <TableRow key={quiz.id}>
                 <TableCell className="break-words">
                   <div className="font-medium">{quiz.title}</div>
-                  <div className="text-sm text-muted-foreground mt-1">
-                    <span className="font-mono text-xs">ID: {quiz.id}</span>
-                  </div>
                 </TableCell>
 
                 <TableCell>{quiz._count.questions ?? 99}</TableCell>
@@ -106,7 +99,12 @@ export default function QuizTable({ initialQuizzes = [] }: QuizTableProps) {
                   {/*<div className="inline-flex items-center justify-end">*/}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" aria-label="Ações">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Ações"
+                        className="cursor-pointer"
+                      >
                         ⋯
                       </Button>
                     </DropdownMenuTrigger>

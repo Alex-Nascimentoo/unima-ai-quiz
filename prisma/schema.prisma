@@ -27,7 +27,7 @@ model Quiz {
 
 model Question {
   id        String   @id @default(cuid())
-  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId    String
   text      String
   options   Option[]
@@ -35,7 +35,7 @@ model Question {
 
 model Option {
   id        String   @id @default(cuid())
-  question  Question @relation(fields: [questionId], references: [id])
+  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   text      String
   isCorrect Boolean
