@@ -5,21 +5,6 @@ import { prisma } from "@/services/database/prisma";
 import { Quiz as QuizType } from "@/app/_types/quiz";
 import QuizRunner from "./_components/quizRunner";
 
-/**
- * Student quiz taking page
- *
- * - Server component fetches the quiz with questions and options.
- * - It renders a client `QuizRunner` (below) that:
- *   - Shows one question at a time
- *   - Collects answers (single-select)
- *   - Displays a final results screen showing which questions were correct/wrong
- *     and the final grade.
- *
- * Note: To keep the implementation simple and self-contained, the client component
- * receives the quiz payload (including `option.isCorrect`) serialized from the server.
- * The UI does NOT show which answers are correct until after the student submits.
- */
-
 type Params = {
   params: {
     id: string;
@@ -27,9 +12,9 @@ type Params = {
 };
 
 export default async function Page({ params }: Params) {
-  const { id } = await params;
+  const { id } = params;
 
-  const quiz = await prisma.quiz.findFirst({
+  const quiz = await prisma.quiz.findUnique({
     where: { id },
     include: {
       questions: {
@@ -43,8 +28,6 @@ export default async function Page({ params }: Params) {
     },
   });
 
-  console.log("inside quizrunner page, found quiz: ", quiz);
-
   if (!quiz) {
     return (
       <main className="p-6">
@@ -54,7 +37,7 @@ export default async function Page({ params }: Params) {
     );
   }
 
-  // Ensure serializable for client
+  // Serialize for client
   const serialized: QuizType = JSON.parse(JSON.stringify(quiz));
 
   return (
